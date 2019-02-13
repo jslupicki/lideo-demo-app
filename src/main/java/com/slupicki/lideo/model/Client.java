@@ -9,7 +9,7 @@ import javax.persistence.Id;
 @Data
 @Entity
 public class Client {
-    private @Id
+    @Id
     @GeneratedValue
-    Long id;
+    private Long id;
 }

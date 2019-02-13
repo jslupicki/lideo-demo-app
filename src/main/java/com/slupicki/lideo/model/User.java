@@ -9,9 +9,9 @@ import javax.persistence.Id;
 @Data()
 @Entity
 public class User {
-    private @Id
+    @Id
     @GeneratedValue
-    Long id;
+    private Long id;
     private String login;
     private String password;
 
