@@ -26,7 +26,7 @@ public class MyStepdefs extends SpringIntegrationTest implements En {
             System.out.println("Path:" + path);
             System.out.println("Time provider:" + timeProvider.getClass().getCanonicalName());
             System.out.println("**********************");
-            userList = getList(path, new ParameterizedTypeReference<List<User>>() {
+            userList = get(path, new ParameterizedTypeReference<List<User>>() {
             });
         });
         Then("^receiver got list of users$", () -> {
