@@ -1,6 +1,7 @@
 package com.slupicki.lideo;
 
 import com.slupicki.lideo.dao.UserRepository;
+import com.slupicki.lideo.misc.TimeProvider;
 import com.slupicki.lideo.rest.UserController;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.Before;
@@ -25,6 +26,9 @@ public class LideoDemoAppApplicationTests {
     @Autowired
     private UserController userController;
 
+    @Autowired
+    private TimeProvider timeProvider;
+
     @Before
     public void setup() {
         RestAssuredMockMvc.standaloneSetup(userController);
@@ -32,6 +36,9 @@ public class LideoDemoAppApplicationTests {
 
     @Test
     public void contextLoads() {
+        System.out.println("********************");
+        System.out.println("Time provider: " + timeProvider.getClass().getCanonicalName());
+        System.out.println("********************");
     }
 
     @Test

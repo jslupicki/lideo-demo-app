@@ -14,8 +14,6 @@ import java.util.List;
 
 @SpringBootTest(classes = LideoDemoAppApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ContextConfiguration
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-//@Scope("cucumber-glue")
 public class SpringIntegrationTest {
 
     @Autowired
