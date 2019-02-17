@@ -5,6 +5,7 @@ import com.slupicki.lideo.model.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -16,7 +17,14 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    List<User> all() {
-        return userRepository.findAll();
+    List<User> all(HttpSession session) {
+        System.out.println("************************");
+        System.out.println("Session ID: " + session.getId());
+        System.out.println("Number of users last time: " + session.getAttribute("last_time_users_count"));
+        List<User> users = userRepository.findAll();
+        session.setAttribute("last_time_users_count", users.size());
+        System.out.println("Number of users currently: " + session.getAttribute("last_time_users_count"));
+        System.out.println("************************");
+        return users;
     }
 }
