@@ -1,11 +1,17 @@
 package com.slupicki.lideo.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Client {
     @Id
@@ -22,25 +28,36 @@ public class Client {
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations;
 
+
     public static Client of(String name) {
-        return of(name, null, null, null, null);
+        return Client.builder()
+                .name(name)
+                .build();
     }
 
     public static Client of(String name, String surname) {
-        return of(name, surname, null, null, null);
+        return Client.builder()
+                .name(name)
+                .surname(surname)
+                .build();
     }
 
     public static Client of(String name, String surname, String address) {
-        return of(name, surname, address, null, null);
+        return Client.builder()
+                .name(name)
+                .surname(surname)
+                .address(address)
+                .build();
     }
 
     public static Client of(String name, String surname, String address, String login, String password) {
-        Client client = new Client();
-        client.setName(name);
-        client.setSurname(surname);
-        client.setAddress(address);
-        client.setLogin(login);
-        client.setPassword(password);
-        return client;
+        return Client.builder()
+                .name(name)
+                .surname(surname)
+                .address(address)
+                .login(login)
+                .password(password)
+                .build();
     }
+
 }

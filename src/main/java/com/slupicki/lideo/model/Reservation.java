@@ -1,12 +1,18 @@
 package com.slupicki.lideo.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Data
+@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Reservation {
     @Id
@@ -24,18 +30,24 @@ public class Reservation {
     private Payment payment;
 
     public static Reservation of(Client client, Flight flight, Integer seats, BigDecimal price) {
-        return of(client, flight, seats, price, false, null);
+        return Reservation.builder()
+                .client(client)
+                .flight(flight)
+                .seats(seats)
+                .price(price)
+                .cancellation(false)
+                .build();
     }
 
     public static Reservation of(Client client, Flight flight, Integer seats, BigDecimal price, Boolean cancellation, Payment payment) {
-        Reservation reservation = new Reservation();
-        reservation.setClient(client);
-        reservation.setFlight(flight);
-        reservation.setSeats(seats);
-        reservation.setPrice(price);
-        reservation.setCancellation(cancellation);
-        reservation.setPayment(payment);
-        return reservation;
+        return Reservation.builder()
+                .client(client)
+                .flight(flight)
+                .seats(seats)
+                .price(price)
+                .cancellation(cancellation)
+                .payment(payment)
+                .build();
     }
 
     @Override

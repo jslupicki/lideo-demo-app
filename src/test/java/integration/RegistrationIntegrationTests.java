@@ -6,8 +6,8 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-        features = "classpath:user.feature"
+        features = "classpath:registration.feature"
         , glue = {"classpath:integration/stepdefs", "classpath:integration/stepdefs/client"}
 )
-public class UserIntegrationTests extends SpringIntegrationTest {
+public class RegistrationIntegrationTests extends SpringIntegrationTest {
 }

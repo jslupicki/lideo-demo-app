@@ -3,6 +3,10 @@ Feature: Registration of clients
   use login and password to identifying itself.
 
   Scenario: Register new client
+    Given client with name A surname B and login L and password P
+    And empty DB
+    When send client by POST on /client/
+    Then client appears in DB
 
   Scenario: Client can't register twice
 
