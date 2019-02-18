@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
@@ -58,6 +60,20 @@ public class DaoTests {
         System.out.println("*************************************");
         System.out.println("Client: " + client1);
         System.out.println("*************************************");
+    }
+
+    @Test
+    public void findByLoginTest() {
+        Client l1 = Client.builder().login("l1").build();
+        Client l2 = Client.builder().login("l2").build();
+
+        assertThat(clientRepository.countByLogin("l1")).isEqualTo(0);
+
+        clientRepository.save(l1);
+        clientRepository.save(l2);
+
+        assertThat(clientRepository.countByLogin("l1")).isEqualTo(1);
+        assertThat(clientRepository.countByLogin("l2")).isEqualTo(1);
     }
 
     private void cleanDB() {

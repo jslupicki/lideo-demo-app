@@ -1,6 +1,7 @@
 package com.slupicki.lideo.rest;
 
 import com.slupicki.lideo.dao.ClientRepository;
+import com.slupicki.lideo.exceptions.AlreadyExistException;
 import com.slupicki.lideo.exceptions.UnauthorizedException;
 import com.slupicki.lideo.model.Client;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,8 @@ public class ClientController {
     }
 
     @PostMapping("/")
-    public Long registerNewClient(@RequestBody Client client) {
+    public Long registerNewClient(@RequestBody Client client) throws AlreadyExistException {
+        checkIfClientAlreadyExist(client);
         clientRepository.save(client);
         return client.getId();
     }
@@ -46,10 +48,6 @@ public class ClientController {
             String[] decoded = new String(Base64.getDecoder().decode(matcher.group(1))).split(":");
             String login = decoded[0];
             String password = decoded[1];
-            System.out.println("************************");
-            System.out.println("Login:" + login);
-            System.out.println("Password:" + password);
-            System.out.println("************************");
             Client client = clientRepository.findByLoginAndPassword(login, password);
             if (client != null) {
                 session.setAttribute("client_id", client.getId());
@@ -60,7 +58,8 @@ public class ClientController {
     }
 
     @PutMapping("/")
-    public Long updateClient(@RequestBody Client client) {
+    public Long updateClient(@RequestBody Client client) throws AlreadyExistException {
+        checkIfClientAlreadyExist(client);
         clientRepository.save(client);
         return client.getId();
     }
@@ -69,4 +68,14 @@ public class ClientController {
     public Client getTemplate() {
         return Client.builder().build();
     }
+
+    private void checkIfClientAlreadyExist(@RequestBody Client client) throws AlreadyExistException {
+        if (client.getLogin() == null) {
+            return;
+        }
+        if (clientRepository.countByLogin(client.getLogin()) > 0) {
+            throw new AlreadyExistException("Login '" + client.getLogin() + "' already exist");
+        }
+    }
+
 }
