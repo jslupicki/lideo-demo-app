@@ -24,8 +24,10 @@ public class CommonStepdefs extends SpringIntegrationTest implements En {
 
     public CommonStepdefs() {
         Given("empty DB", () -> {
-            // Write code here that turns the phrase above into concrete actions
-            throw new cucumber.api.PendingException();
+            reservationRepository.deleteAll();
+            paymentRepository.deleteAll();
+            flightRepository.deleteAll();
+            clientRepository.deleteAll();
         });
 
     }

@@ -60,6 +60,10 @@ public class RestTool {
         return get(BASE_TEMPLATE, typeReference, Maps.newHashMap(), ImmutableMap.of("path", path));
     }
 
+    public <T> Optional<T> post(String path, Class<T> clazz, Object data) throws Exception {
+        return post(BASE_TEMPLATE, clazz, data, Maps.newHashMap(), ImmutableMap.of("path", path));
+    }
+
     public <T> Optional<T> get(String service, Class<T> clazz, Map<String, String> queryParams, Map<String, String> uriParams) throws Exception {
         return call(HttpMethod.GET, service, clazz, null, queryParams, uriParams);
     }
@@ -132,6 +136,10 @@ public class RestTool {
         String msg = String.format("call: %s '%s' and body: %s", type.toString(), url, body);
 
         try {
+            if (headers == null) {
+                headers = new HttpHeaders();
+            }
+            headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, type, requestEntity, String.class);
             responseBody = responseEntity.getBody();
