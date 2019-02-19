@@ -8,8 +8,11 @@ import com.slupicki.lideo.testTools.RestTool;
 import cucumber.api.java8.En;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
+import java.nio.charset.Charset;
+import java.util.Base64;
 import java.util.Optional;
 
 import static com.slupicki.lideo.testTools.RestTool.*;
@@ -63,6 +66,22 @@ public class ClientStepdefs implements En {
 
         Then("result is {bool}", (Boolean expectedResult) -> {
             assertThat(lastResult).isEqualTo(expectedResult);
+        });
+
+        When("get current client", () -> {
+            client = restTool.get(CURRENT_CLIENT, Client.class, EMPTY_PARAMS, EMPTY_PARAMS).orElse(null);
+        });
+
+        Given("client log in by login {string} and password {string}", (String login, String password) -> {
+            HttpHeaders httpHeaders = new HttpHeaders();
+            String authorization = "Basic " + Base64.getEncoder().encodeToString((login + ":" + password).getBytes(Charset.defaultCharset()));
+            httpHeaders.add("Authorization", authorization);
+            restTool.headers = httpHeaders;
+            restTool.get(LOGIN, Void.class, EMPTY_PARAMS, EMPTY_PARAMS);
+        });
+
+        And("client have name {word}", (String name) -> {
+            assertThat(client.getName()).isEqualTo(name);
         });
     }
 }

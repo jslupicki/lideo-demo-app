@@ -4,6 +4,7 @@ import com.slupicki.lideo.dao.ClientRepository;
 import com.slupicki.lideo.dao.UserRepository;
 import com.slupicki.lideo.misc.TimeProvider;
 import com.slupicki.lideo.misc.TimeProviderImpl;
+import com.slupicki.lideo.model.Client;
 import com.slupicki.lideo.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -36,6 +37,7 @@ public class MainConfig {
     ) {
         return args -> {
             log.info("Preloading " + userRepository.save(new User("login", "pass")));
+            log.info("Preloading " + clientRepository.save(Client.builder().login("client1").password("pass1").build()));
         };
     }
 }

@@ -51,7 +51,7 @@ public class ClientController {
 
     @GetMapping("/login")
     public void login(HttpServletRequest request, HttpSession session) throws UnauthorizedException {
-        String authorization = request.getHeader("authorization");
+        String authorization = request.getHeader("Authorization");
         Matcher matcher = BASIC_AUTHORIZATION_PATTERN.matcher(authorization);
         if (matcher.matches()) {
             String[] decoded = new String(Base64.getDecoder().decode(matcher.group(1))).split(":");
