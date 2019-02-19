@@ -2,6 +2,7 @@ package integration.stepdefs.user;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.ImmutableMap;
 import com.slupicki.lideo.misc.TimeProvider;
 import com.slupicki.lideo.model.User;
 import com.slupicki.lideo.testTools.RestTool;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.slupicki.lideo.testTools.RestTool.BASE_TEMPLATE;
+import static com.slupicki.lideo.testTools.RestTool.EMPTY_PARAMS;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserStepdefs implements En {
@@ -30,8 +33,8 @@ public class UserStepdefs implements En {
             System.out.println("Path:" + path);
             System.out.println("Time provider:" + timeProvider.getClass().getCanonicalName());
             System.out.println("**********************");
-            userList = restTool.get(path, new TypeReference<List<User>>() {
-            }).orElse(null);
+            userList = restTool.get(BASE_TEMPLATE, new TypeReference<List<User>>() {
+            }, EMPTY_PARAMS, ImmutableMap.of("path", path)).orElse(null);
         });
         Then("receiver got list of users", () -> {
             assertThat(userList).isNotNull();

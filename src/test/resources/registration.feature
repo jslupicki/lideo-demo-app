@@ -16,4 +16,12 @@ Feature: Registration of clients
     Then got response code 409 and body contains "already exist"
 
   Scenario: Client can check if login is already used
+    Given empty DB
+    When check login "L"
+    Then result is false
+    Given client with name A surname B and login L and password P
+    And send client by POST on /client/
+    When check login "L"
+    Then result is true
+
 

@@ -2,6 +2,8 @@ package com.slupicki.lideo.rest;
 
 import com.slupicki.lideo.dao.ClientRepository;
 import com.slupicki.lideo.exceptions.AlreadyExistException;
+import com.slupicki.lideo.exceptions.NotFoundException;
+import com.slupicki.lideo.exceptions.NotLoggedInException;
 import com.slupicki.lideo.exceptions.UnauthorizedException;
 import com.slupicki.lideo.model.Client;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/client")
 public class ClientController {
 
+    private static final String CLIENT_ID = "client_id";
+
     private final ClientRepository clientRepository;
 
     private final Pattern BASIC_AUTHORIZATION_PATTERN = Pattern.compile("Basic (.*)");
@@ -31,6 +35,11 @@ public class ClientController {
         return clientRepository.findAll().stream()
                 .map(client -> client.toBuilder().password("(filtered out)").build())
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/{id}")
+    public Client getClient(@PathVariable("id") Long id) throws NotFoundException {
+        return clientRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
     @PostMapping("/")
@@ -50,11 +59,20 @@ public class ClientController {
             String password = decoded[1];
             Client client = clientRepository.findByLoginAndPassword(login, password);
             if (client != null) {
-                session.setAttribute("client_id", client.getId());
+                session.setAttribute(CLIENT_ID, client.getId());
                 return;
             }
         }
         throw new UnauthorizedException("Unauthorized");
+    }
+
+    @GetMapping("/logged")
+    public Client getLogged(HttpSession session) throws NotLoggedInException, NotFoundException {
+        Long clientId = (Long) session.getAttribute(CLIENT_ID);
+        if (clientId == null) {
+            throw new NotLoggedInException("Client not logged in");
+        }
+        return clientRepository.findById(clientId).orElseThrow(NotFoundException::new);
     }
 
     @PutMapping("/")
@@ -67,6 +85,11 @@ public class ClientController {
     @GetMapping("/template")
     public Client getTemplate() {
         return Client.builder().build();
+    }
+
+    @GetMapping("/login/{login}")
+    public Boolean isLoginAlreadyExist(@PathVariable("login") String login) {
+        return clientRepository.countByLogin(login) > 0;
     }
 
     private void checkIfClientAlreadyExist(@RequestBody Client client) throws AlreadyExistException {

@@ -1,7 +1,6 @@
 package com.slupicki.lideo.testTools;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.google.common.reflect.TypeToken;
 import org.slf4j.Logger;
@@ -25,7 +24,9 @@ public class RestTool {
 
     private final Logger log = LoggerFactory.getLogger(RestTool.class);
 
-    private static final String BASE_TEMPLATE = "{protocol}://{host}:{port}{path}";
+    public static final Map<String, String> EMPTY_PARAMS = Maps.newHashMap();
+    public static final String BASE_TEMPLATE = "{protocol}://{host}:{port}{path}";
+    public static final String CHECK_LOGIN = "{protocol}://{host}:{port}/client/login/{login}";
 
     private final RestTemplate restTemplate;
     private final String serverPort;
@@ -54,14 +55,6 @@ public class RestTool {
                     }
                 }
         );
-    }
-
-    public <T> Optional<T> get(String path, TypeReference<T> typeReference) throws Exception {
-        return get(BASE_TEMPLATE, typeReference, Maps.newHashMap(), ImmutableMap.of("path", path));
-    }
-
-    public <T> Optional<T> post(String path, Class<T> clazz, Object data) throws Exception {
-        return post(BASE_TEMPLATE, clazz, data, Maps.newHashMap(), ImmutableMap.of("path", path));
     }
 
     public <T> Optional<T> get(String service, Class<T> clazz, Map<String, String> queryParams, Map<String, String> uriParams) throws Exception {
