@@ -5,9 +5,11 @@ import com.slupicki.lideo.dao.ClientRepository;
 import com.slupicki.lideo.exceptions.NotFoundException;
 import com.slupicki.lideo.model.Client;
 import com.slupicki.lideo.testTools.RestTool;
+import com.slupicki.lideo.testTools.State;
 import cucumber.api.java8.En;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 
@@ -22,54 +24,62 @@ public class ClientStepdefs implements En {
 
     private final Logger log = LoggerFactory.getLogger(ClientStepdefs.class);
 
-    private Client client;
-    private Long clientId;
-    private Boolean lastResult;
+    @Autowired
+    private ClientRepository clientRepository;
+    @Autowired
+    private RestTool restTool;
+    @Autowired
+    private State state;
 
-    public ClientStepdefs(
-            RestTool restTool,
-            ClientRepository clientRepository
-    ) {
+    public ClientStepdefs() {
         Given("client with name {word} surname {word} and login {word} and password {word}", (String name, String surname, String login, String password) -> {
             // Write code here that turns the phrase above into concrete actions
-            this.client = Client.builder()
+            state.setClient(
+                Client.builder()
                     .name(name)
                     .surname(surname)
                     .login(login)
                     .password(password)
-                    .build();
-            log.info("Client created: {}", this.client);
+                    .build()
+            );
+            log.info("Client created: {}", state.getClient());
         });
 
         When("send client by POST on {word}", (String path) -> {
-            this.clientId = restTool.post(BASE_TEMPLATE, Long.class, client, EMPTY_PARAMS, ImmutableMap.of("path", path)).orElse(null);
-            if (HttpStatus.OK.equals(restTool.statusCode)) {
-                assertThat(clientId).isNotNull();
+            state.setClientId(
+                restTool.post(BASE_TEMPLATE, Long.class, state.getClient(), EMPTY_PARAMS, ImmutableMap.of("path", path)).orElse(null)
+            );
+            if (HttpStatus.OK.equals(state.getHttpStatus())) {
+                assertThat(state.getClientId()).isNotNull();
             }
-            assertThat(restTool.statusCode).isIn(HttpStatus.OK, HttpStatus.CONFLICT);
+            assertThat(state.getHttpStatus()).isIn(HttpStatus.OK, HttpStatus.CONFLICT);
         });
 
         Then("client appears in DB", () -> {
-            Optional<Client> clientById = clientRepository.findById(clientId);
+            Optional<Client> clientById = clientRepository.findById(state.getClientId());
             assertThat(clientById).isPresent();
         });
 
         Then("got response code {int} and body contains {string}", (Integer code, String body) -> {
             log.info("code: {}, body: {}", code, body);
-            assertThat(restTool.statusCode.value()).isEqualTo(code);
-            assertThat(restTool.responseBody).contains(body);
+            assertThat(state.getHttpStatus().value()).isEqualTo(code);
+            assertThat(state.getResponseBody()).contains(body);
         });
 
         When("check login {string}", (String login) -> {
-            lastResult = restTool.get(CHECK_LOGIN, Boolean.class, EMPTY_PARAMS, ImmutableMap.of("login", login)).orElseThrow(NotFoundException::new);
+            state.setTestResult(
+                restTool.get(CHECK_LOGIN, Boolean.class, EMPTY_PARAMS, ImmutableMap.of("login", login)).orElseThrow(NotFoundException::new)
+            );
         });
 
         Then("result is {bool}", (Boolean expectedResult) -> {
-            assertThat(lastResult).isEqualTo(expectedResult);
+            assertThat(state.getTestResult()).isEqualTo(expectedResult);
         });
 
         When("get current client", () -> {
-            client = restTool.get(CURRENT_CLIENT, Client.class, EMPTY_PARAMS, EMPTY_PARAMS).orElse(null);
+            state.setClient(
+                restTool.get(CURRENT_CLIENT, Client.class, EMPTY_PARAMS, EMPTY_PARAMS).orElse(null)
+            );
         });
 
         Given("client log in by login {string} and password {string}", (String login, String password) -> {
@@ -81,7 +91,7 @@ public class ClientStepdefs implements En {
         });
 
         And("client have name {word}", (String name) -> {
-            assertThat(client.getName()).isEqualTo(name);
+            assertThat(state.getClient().getName()).isEqualTo(name);
         });
     }
 }

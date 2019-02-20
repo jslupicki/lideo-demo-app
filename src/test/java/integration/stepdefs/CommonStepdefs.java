@@ -6,6 +6,7 @@ import com.slupicki.lideo.dao.FlightRepository;
 import com.slupicki.lideo.dao.PaymentRepository;
 import com.slupicki.lideo.dao.ReservationRepository;
 import com.slupicki.lideo.testTools.RestTool;
+import com.slupicki.lideo.testTools.State;
 import cucumber.api.java8.En;
 import integration.SpringIntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ public class CommonStepdefs extends SpringIntegrationTest implements En {
     private ReservationRepository reservationRepository;
     @Autowired
     private RestTool restTool;
+    @Autowired
+    private State state;
 
     public CommonStepdefs() {
         Given("empty DB", () -> {
@@ -36,8 +39,12 @@ public class CommonStepdefs extends SpringIntegrationTest implements En {
             clientRepository.deleteAll();
         });
 
+        Given("clear state", () -> {
+            state.clear();
+        });
+
         Then("status is {word}", (String status) -> {
-            assertThat(restTool.statusCode).isEqualTo(HttpStatus.valueOf(status));
+            assertThat(state.getHttpStatus()).isEqualTo(HttpStatus.valueOf(status));
         });
 
     }
