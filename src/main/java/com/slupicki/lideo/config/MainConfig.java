@@ -18,26 +18,26 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class MainConfig {
 
-    @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        // Do any additional configuration here
-        return builder.build();
-    }
+  @Bean
+  public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    // Do any additional configuration here
+    return builder.build();
+  }
 
-    @Bean
-    @ConditionalOnMissingBean(TimeProvider.class)
-    public TimeProvider timeProvider() {
-        return new TimeProviderImpl();
-    }
+  @Bean
+  @ConditionalOnMissingBean(TimeProvider.class)
+  public TimeProvider timeProvider() {
+    return new TimeProviderImpl();
+  }
 
-    @Bean
-    CommandLineRunner initDatabase(
-            UserRepository userRepository,
-            ClientRepository clientRepository
-    ) {
-        return args -> {
-            log.info("Preloading " + userRepository.save(new User("login", "pass")));
-            log.info("Preloading " + clientRepository.save(Client.builder().login("client1").password("pass1").build()));
-        };
-    }
+  @Bean
+  CommandLineRunner initDatabase(
+      UserRepository userRepository,
+      ClientRepository clientRepository
+  ) {
+    return args -> {
+      log.info("Preloading " + userRepository.save(new User("login", "pass")));
+      log.info("Preloading " + clientRepository.save(Client.builder().login("client1").password("pass1").build()));
+    };
+  }
 }

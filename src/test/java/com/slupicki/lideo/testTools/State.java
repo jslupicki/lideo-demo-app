@@ -5,7 +5,6 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 import com.google.common.collect.Maps;
 import com.slupicki.lideo.model.Client;
 import java.util.Map;
-import org.junit.Test;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClientRepository extends JpaRepository<Client, Long> {
 
-    Client findByLoginAndPassword(String login, String password);
+  Client findByLoginAndPassword(String login, String password);
 
-    Long countByLogin(String login);
+  Long countByLogin(String login);
 }
