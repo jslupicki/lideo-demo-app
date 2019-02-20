@@ -26,10 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClientController {
 
   private static final String CLIENT_ID = "client_id";
+  private static final Pattern BASIC_AUTHORIZATION_PATTERN = Pattern.compile("Basic (.*)");
 
   private final ClientRepository clientRepository;
-
-  private final Pattern BASIC_AUTHORIZATION_PATTERN = Pattern.compile("Basic (.*)");
 
   public ClientController(ClientRepository clientRepository) {
     this.clientRepository = clientRepository;
