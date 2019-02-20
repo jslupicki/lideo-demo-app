@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -28,7 +29,7 @@ public class Flight {
   private ZonedDateTime departureTime;
   private Integer freeSeats;
   private BigDecimal pricePerSeat;
-  @OneToMany(mappedBy = "flight")
+  @OneToMany(mappedBy = "flight", fetch = FetchType.EAGER)
   private List<Reservation> reservations;
 
   public static Flight of(String departure, String arrival, ZonedDateTime departureTime, Integer freeSeats, BigDecimal pricePerSeat) {
