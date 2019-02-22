@@ -14,6 +14,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
   @Query("select distinct arrival from Flight")
   Set<String> arrivals();
 
+  // Probably I shuld rewrite this to @Query("...") but it looks so cool :-)
   Set<Flight> findByArrivalIgnoreCaseContainingAndDepartureIgnoreCaseContainingAndDepartureTimeGreaterThanEqualAndDepartureTimeLessThanEqualAndFreeSeatsGreaterThanEqual(
       String arrival,
       String departure,

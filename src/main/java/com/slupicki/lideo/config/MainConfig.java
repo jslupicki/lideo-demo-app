@@ -2,12 +2,10 @@ package com.slupicki.lideo.config;
 
 import com.slupicki.lideo.dao.ClientRepository;
 import com.slupicki.lideo.dao.FlightRepository;
-import com.slupicki.lideo.dao.UserRepository;
 import com.slupicki.lideo.misc.TimeProvider;
 import com.slupicki.lideo.misc.TimeProviderImpl;
 import com.slupicki.lideo.model.Client;
 import com.slupicki.lideo.model.Flight;
-import com.slupicki.lideo.model.User;
 import java.time.ZonedDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -35,12 +33,10 @@ public class MainConfig {
 
   @Bean
   CommandLineRunner initDatabase(
-      UserRepository userRepository,
       ClientRepository clientRepository,
       FlightRepository flightRepository
   ) {
     return args -> {
-      log.info("Preloading " + userRepository.save(new User("login", "pass")));
       log.info("Preloading " + clientRepository.save(Client.builder().login("client1").password("pass1").build()));
       log.info("Preloading " + flightRepository.save(
           Flight.builder().departure("Wroclaw").arrival("Warsaw").departureTime(ZonedDateTime.now().plusDays(3)).freeSeats(10).build()

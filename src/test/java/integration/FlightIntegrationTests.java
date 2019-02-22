@@ -9,6 +9,6 @@ import org.junit.runner.RunWith;
     features = "classpath:flights.feature"
     , glue = {"classpath:integration/stepdefs", "classpath:integration/stepdefs/flight"}
 )
-public class FlightIntegrationTests extends SpringIntegrationTest {
+public class FlightIntegrationTests {
 
 }

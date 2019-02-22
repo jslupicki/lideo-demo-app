@@ -9,6 +9,6 @@ import org.junit.runner.RunWith;
     features = "classpath:registration.feature"
     , glue = {"classpath:integration/stepdefs", "classpath:integration/stepdefs/client"}
 )
-public class RegistrationIntegrationTests extends SpringIntegrationTest {
+public class RegistrationIntegrationTests {
 
 }

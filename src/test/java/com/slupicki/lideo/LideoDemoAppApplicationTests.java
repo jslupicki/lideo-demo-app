@@ -1,12 +1,6 @@
 package com.slupicki.lideo;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.hasItems;
-
-import com.slupicki.lideo.dao.UserRepository;
 import com.slupicki.lideo.misc.TimeProvider;
-import com.slupicki.lideo.rest.UserController;
-import io.restassured.filter.cookie.CookieFilter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class LideoDemoAppApplicationTests {
 
   @Autowired
-  private UserRepository userRepository;
-
-  @Autowired
-  private UserController userController;
-
-  @Autowired
   private TimeProvider timeProvider;
 
   @Test
@@ -35,22 +23,5 @@ public class LideoDemoAppApplicationTests {
     System.out.println("********************");
   }
 
-  @Test
-  public void userControllerShouldReturnAllUsers() {
-    CookieFilter cookieFilter = new CookieFilter();
-
-    given()
-        .filter(cookieFilter)
-        .when()
-        .get("/users")
-        .then()
-        .body("id", hasItems(1))
-        .body("login", hasItems("login"));
-
-    given()
-        .filter(cookieFilter)
-        .when()
-        .get("/users");
-  }
 }
 
