@@ -1,8 +1,10 @@
 package com.slupicki.lideo.rest;
 
 import com.slupicki.lideo.exceptions.AlreadyExistException;
+import com.slupicki.lideo.exceptions.NotEnoughtSeatsInFlightException;
 import com.slupicki.lideo.exceptions.NotFoundException;
 import com.slupicki.lideo.exceptions.NotLoggedInException;
+import com.slupicki.lideo.exceptions.ToLateToCancelException;
 import com.slupicki.lideo.exceptions.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -36,8 +38,22 @@ public class AllControllerAdvices {
 
   @ResponseBody
   @ExceptionHandler(NotLoggedInException.class)
-  @ResponseStatus(HttpStatus.NO_CONTENT)
+  @ResponseStatus(HttpStatus.CONFLICT)
   String notLoggedIn(NotLoggedInException ex) {
+    return ex.getMessage();
+  }
+
+  @ResponseBody
+  @ExceptionHandler(ToLateToCancelException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  String toLateToCancel(ToLateToCancelException ex) {
+    return ex.getMessage();
+  }
+
+  @ResponseBody
+  @ExceptionHandler(NotEnoughtSeatsInFlightException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  String notEnoughtSeatsInFlight(NotEnoughtSeatsInFlightException ex) {
     return ex.getMessage();
   }
 

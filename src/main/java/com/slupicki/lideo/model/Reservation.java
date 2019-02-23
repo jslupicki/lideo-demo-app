@@ -1,5 +1,8 @@
 package com.slupicki.lideo.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.math.BigDecimal;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -24,13 +27,19 @@ public class Reservation {
   @GeneratedValue
   private Long id;
 
+  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+  @JsonIdentityReference(alwaysAsId = true)
   @ManyToOne(optional = false)
   private Client client;
+  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+  @JsonIdentityReference(alwaysAsId = true)
   @ManyToOne(optional = false)
   private Flight flight;
   private Integer seats;
   private BigDecimal price;
   private Boolean cancellation;
+  @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+  @JsonIdentityReference(alwaysAsId = true)
   @OneToOne(cascade = CascadeType.ALL)
   private Payment payment;
 
