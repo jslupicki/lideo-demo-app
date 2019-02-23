@@ -27,9 +27,7 @@ public class Client {
   private String address;
   private String login;
   private String password;
-  @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
-  private List<Payment> payments;
-  @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
   private List<Reservation> reservations;
 
 

@@ -1,11 +1,10 @@
 package com.slupicki.lideo.model;
 
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,30 +22,25 @@ public class Payment {
   @GeneratedValue
   private Long id;
 
-  @ManyToOne(optional = false)
-  private Client client;
-  @OneToOne(optional = false)
-  private Reservation reservation;
   private BigDecimal amount;
   private Boolean paid;
   private String externalId;
+  private ZonedDateTime createdAt;
 
-  public static Payment of(Client client, Reservation reservation, BigDecimal amount) {
+  public static Payment of(BigDecimal amount) {
     return Payment.builder()
-        .client(client)
-        .reservation(reservation)
         .amount(amount)
         .paid(false)
+        .createdAt(ZonedDateTime.now())
         .build();
   }
 
-  public static Payment of(Client client, Reservation reservation, BigDecimal amount, Boolean paid, String externalId) {
+  public static Payment of(BigDecimal amount, Boolean paid, String externalId) {
     return Payment.builder()
-        .client(client)
-        .reservation(reservation)
         .amount(amount)
         .paid(paid)
         .externalId(externalId)
+        .createdAt(ZonedDateTime.now())
         .build();
   }
 
@@ -54,8 +48,6 @@ public class Payment {
   public String toString() {
     return new ToStringBuilder(this)
         .append("id", id)
-        .append("client", client.getId())
-        .append("reservation", reservation.getId())
         .append("amount", amount)
         .append("paid", paid)
         .append("externalId", externalId)

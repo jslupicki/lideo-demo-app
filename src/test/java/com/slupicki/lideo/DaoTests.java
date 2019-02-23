@@ -1,6 +1,7 @@
 package com.slupicki.lideo;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 import com.google.common.collect.ImmutableList;
 import com.slupicki.lideo.dao.ClientRepository;
@@ -9,16 +10,22 @@ import com.slupicki.lideo.dao.PaymentRepository;
 import com.slupicki.lideo.dao.ReservationRepository;
 import com.slupicki.lideo.model.Client;
 import com.slupicki.lideo.model.Flight;
+import com.slupicki.lideo.model.Payment;
 import com.slupicki.lideo.model.Reservation;
 import java.math.BigDecimal;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,6 +35,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class DaoTests {
 
+  private static final Logger log = LoggerFactory.getLogger(DaoTests.class);
+
   @Autowired
   private ClientRepository clientRepository;
   @Autowired
@@ -36,6 +45,9 @@ public class DaoTests {
   private PaymentRepository paymentRepository;
   @Autowired
   private ReservationRepository reservationRepository;
+
+  @Value("${scheduler.cancelling_unpaid_reservations.period}")
+  private Period howLongBeforeCancelUnpaidReservation;
 
   @Before
   public void setUp() throws Exception {
@@ -111,7 +123,7 @@ public class DaoTests {
     ));
 
     Set<Flight> flights = flightRepository
-        .findByArrivalIgnoreCaseContainingAndDepartureIgnoreCaseContainingAndDepartureTimeGreaterThanEqualAndDepartureTimeLessThanEqualAndFreeSeatsGreaterThanEqual(
+        .findDistinctByArrivalIgnoreCaseContainingAndDepartureIgnoreCaseContainingAndDepartureTimeGreaterThanEqualAndDepartureTimeLessThanEqualAndFreeSeatsGreaterThanEqual(
             "warsaw",
             "wroclaw",
             ZonedDateTime.now().minusDays(20),
@@ -121,9 +133,57 @@ public class DaoTests {
     System.out.println(flights);
   }
 
+  @Test
+  public void findOverdueReservations() throws Exception {
+    Flight flight = Flight.builder().departure("Wroclaw").arrival("Warsaw").departureTime(ZonedDateTime.now().plusDays(3)).freeSeats(10).build();
+    flightRepository.save(flight);
+
+    Client client = Client.of("Client1");
+    Reservation reservation = Reservation.of(client, flight, 2, BigDecimal.valueOf(10));
+    Payment payment = Payment.of(BigDecimal.valueOf(10));
+    reservation.setPayment(payment);
+    client.setReservations(ImmutableList.of(reservation));
+    clientRepository.save(client);
+
+    Set<Reservation> overdueReservations = reservationRepository
+        .findDistinctByCancellationFalseAndPayment_CreatedAtBeforeAndPayment_PaidFalse(ZonedDateTime.now().minusDays(1));
+    assertThat(overdueReservations).isEmpty();
+
+    overdueReservations = reservationRepository
+        .findDistinctByCancellationFalseAndPayment_CreatedAtBeforeAndPayment_PaidFalse(ZonedDateTime.now().plusDays(1));
+    assertThat(overdueReservations).hasSize(1);
+
+    assertThat(overdueReservations).allMatch(r -> !r.getCancellation());
+    int howManyCanceled = reservationRepository.cancelOverdueReservations(ZonedDateTime.now().plusDays(1));
+    assertThat(howManyCanceled).isEqualTo(1);
+
+    overdueReservations = reservationRepository
+        .findDistinctByCancellationFalseAndPayment_CreatedAtBeforeAndPayment_PaidFalse(ZonedDateTime.now().minusDays(1));
+    assertThat(overdueReservations).isEmpty();
+  }
+
+  @Test
+  public void schedulerUnpaidReservations() {
+    Flight flight = Flight.builder().departure("Wroclaw").arrival("Warsaw").departureTime(ZonedDateTime.now().plusDays(3)).freeSeats(10).build();
+    flightRepository.save(flight);
+
+    Client client = Client.of("Client1");
+    Reservation reservation = Reservation.of(client, flight, 2, BigDecimal.valueOf(10));
+    Payment payment = Payment.of(BigDecimal.valueOf(10));
+    payment.setCreatedAt(ZonedDateTime.now().minus(howLongBeforeCancelUnpaidReservation).minusMinutes(1)); // candidate to cancellation
+    reservation.setPayment(payment);
+    client.setReservations(ImmutableList.of(reservation));
+    clientRepository.save(client);
+
+    await().atMost(2, TimeUnit.SECONDS).until(() -> {
+      Set<Reservation> overdueReservations = reservationRepository
+          .findDistinctByCancellationFalseAndPayment_CreatedAtBeforeAndPayment_PaidFalse(ZonedDateTime.now().minus(howLongBeforeCancelUnpaidReservation));
+      return overdueReservations.isEmpty();
+    });
+  }
+
   private void cleanDB() {
     reservationRepository.deleteAll();
-    paymentRepository.deleteAll();
     flightRepository.deleteAll();
     clientRepository.deleteAll();
   }

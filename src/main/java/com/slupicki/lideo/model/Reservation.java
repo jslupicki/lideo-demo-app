@@ -1,6 +1,7 @@
 package com.slupicki.lideo.model;
 
 import java.math.BigDecimal;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -30,7 +31,7 @@ public class Reservation {
   private Integer seats;
   private BigDecimal price;
   private Boolean cancellation;
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   private Payment payment;
 
   public static Reservation of(Client client, Flight flight, Integer seats, BigDecimal price) {

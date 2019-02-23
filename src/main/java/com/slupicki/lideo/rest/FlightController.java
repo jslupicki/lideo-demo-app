@@ -35,7 +35,7 @@ public class FlightController {
   @PostMapping("/search")
   public Set<Flight> findFlight(@RequestBody FlightDTO flightDTO) {
     return flightRepository
-        .findByArrivalIgnoreCaseContainingAndDepartureIgnoreCaseContainingAndDepartureTimeGreaterThanEqualAndDepartureTimeLessThanEqualAndFreeSeatsGreaterThanEqual(
+        .findDistinctByArrivalIgnoreCaseContainingAndDepartureIgnoreCaseContainingAndDepartureTimeGreaterThanEqualAndDepartureTimeLessThanEqualAndFreeSeatsGreaterThanEqual(
             Optional.ofNullable(flightDTO.getArrival()).orElse(""),
             Optional.ofNullable(flightDTO.getDeparture()).orElse(""),
             Optional.ofNullable(flightDTO.getFromDepartureTime()).orElse(ZonedDateTime.now().minusYears(1000)),
