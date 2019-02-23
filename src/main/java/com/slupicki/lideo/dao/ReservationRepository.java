@@ -2,6 +2,7 @@ package com.slupicki.lideo.dao;
 
 import com.slupicki.lideo.exceptions.NotFoundException;
 import com.slupicki.lideo.exceptions.ToLateToCancelException;
+import com.slupicki.lideo.model.Flight;
 import com.slupicki.lideo.model.Reservation;
 import java.text.MessageFormat;
 import java.time.ZonedDateTime;
@@ -21,7 +22,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
   @Transactional
   default int cancelOverdueReservations(ZonedDateTime before) {
     Set<Reservation> overdueReservations = findDistinctByCancellationFalseAndPayment_CreatedAtBeforeAndPayment_PaidFalse(before);
-    overdueReservations.forEach(reservation -> reservation.setCancellation(true));
+    overdueReservations.forEach(reservation -> {
+      Flight flight = reservation.getFlight();
+      flight.setFreeSeats(flight.getFreeSeats() + reservation.getSeats());
+      reservation.setCancellation(true);
+    });
     saveAll(overdueReservations);
     return overdueReservations.size();
   }
@@ -34,9 +39,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
       throw new NotFoundException(MessageFormat.format("Can''t find reservation with id = {0} for client with id = {1}", id, clientId));
     }
     Reservation reservation = reservationOpt.get();
-    if (ZonedDateTime.now().plusDays(howManyDaysBeforeFlightReservationCanBeCanceled).isAfter(reservation.getFlight().getDepartureTime())) {
+    Flight flight = reservation.getFlight();
+    if (ZonedDateTime.now().plusDays(howManyDaysBeforeFlightReservationCanBeCanceled).isAfter(flight.getDepartureTime())) {
       throw new ToLateToCancelException("It is too late to cancel this reservation");
     }
+    flight.setFreeSeats(flight.getFreeSeats() + reservation.getSeats());
     reservation.setCancellation(true);
     save(reservation);
   }

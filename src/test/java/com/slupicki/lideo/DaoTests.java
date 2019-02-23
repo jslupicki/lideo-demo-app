@@ -8,6 +8,8 @@ import com.slupicki.lideo.dao.ClientRepository;
 import com.slupicki.lideo.dao.FlightRepository;
 import com.slupicki.lideo.dao.PaymentRepository;
 import com.slupicki.lideo.dao.ReservationRepository;
+import com.slupicki.lideo.exceptions.NotFoundException;
+import com.slupicki.lideo.exceptions.ToLateToCancelException;
 import com.slupicki.lideo.model.Client;
 import com.slupicki.lideo.model.Flight;
 import com.slupicki.lideo.model.Payment;
@@ -180,6 +182,23 @@ public class DaoTests {
           .findDistinctByCancellationFalseAndPayment_CreatedAtBeforeAndPayment_PaidFalse(ZonedDateTime.now().minus(howLongBeforeCancelUnpaidReservation));
       return overdueReservations.isEmpty();
     });
+  }
+
+  @Test
+  public void cancelReservationShouldIncreaseAvaiableSeatsInFlight() throws NotFoundException, ToLateToCancelException {
+    Flight flight = Flight.builder().departure("Wroclaw").arrival("Warsaw").departureTime(ZonedDateTime.now().plusDays(3)).freeSeats(10).build();
+    flightRepository.save(flight);
+
+    Client client = Client.of("Client1");
+    Reservation reservation = Reservation.of(client, flight, 2, BigDecimal.valueOf(10));
+    Payment payment = Payment.of(BigDecimal.valueOf(10));
+    reservation.setPayment(payment);
+    client.setReservations(ImmutableList.of(reservation));
+    clientRepository.save(client);
+
+    reservationRepository.cancel(reservation.getId(), client.getId(), 0);
+    flight = flightRepository.findById(flight.getId()).get();
+    assertThat(flight.getFreeSeats()).isEqualTo(12);
   }
 
   private void cleanDB() {

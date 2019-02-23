@@ -33,7 +33,7 @@ public class Reservation {
   private Client client;
   @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
   @JsonIdentityReference(alwaysAsId = true)
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, cascade = CascadeType.MERGE)
   private Flight flight;
   private Integer seats;
   private BigDecimal price;
