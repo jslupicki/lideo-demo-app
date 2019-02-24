@@ -1,0 +1,352 @@
+{
+  "info": {
+    "_postman_id": "b1d4da7e-5976-4987-bb16-6cca8ca50715",
+    "name": "lideo-demo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET users",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "localhost:8080/users",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET clients",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "localhost:8080/client",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "client"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET payments",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "localhost:8080/payment",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "payment"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Paid payment",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"paymentId\": 3,\n    \"externalId\": \"Some external ID\"\n}"
+        },
+        "url": {
+          "raw": "localhost:8080/payment",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "payment"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "localhost:8080/client/login",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "client",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get client Template",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "localhost:8080/client/template",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "client",
+            "template"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Payment Template",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "localhost:8080/payment/template",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "payment",
+            "template"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Flight search template",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "localhost:8080/flight/search/template",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "flight",
+            "search",
+            "template"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add client",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Jan\",\n    \"surname\": \"Kowalski\",\n    \"address\": \"Warszawska 21/31, 54-321 Wrocław\",\n    \"login\": null,\n    \"password\": null\n}"
+        },
+        "url": {
+          "raw": "localhost:8080/client/",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "client",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update client",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"id\": null,\n    \"name\": null,\n    \"surname\": null,\n    \"address\": null,\n    \"login\": null,\n    \"password\": null\n}"
+        },
+        "url": {
+          "raw": "localhost:8080/client/",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "client",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search flight",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "name": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"departure\": \"departure example\",\n    \"arrival\": \"arrival example\",\n    \"fromDepartureTime\": \"2019-02-10T19:30:10.797+01:00\",\n    \"toDepartureTime\": \"2019-02-20T19:30:10.797+01:00\",\n    \"seats\": 3\n}"
+        },
+        "url": {
+          "raw": "localhost:8080/flight/search",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "flight",
+            "search"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Reservation template",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Add reservation",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"clientId\": 1,\n    \"flightId\": 2,\n    \"seats\": 1,\n    \"fasterCheckIn\": true\n}"
+        },
+        "url": {
+          "raw": "localhost:8080/reservation",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "reservation"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cancel reservation",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Jan\",\n    \"surname\": \"Kowalski\",\n    \"address\": \"Warszawska 21/31, 54-321 Wrocław\",\n    \"login\": null,\n    \"password\": null\n}"
+        },
+        "url": {
+          "raw": "localhost:8080/reservation/6",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "reservation",
+            "6"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
