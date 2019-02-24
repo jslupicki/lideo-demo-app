@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Data
@@ -22,6 +23,7 @@ public class Payment {
   @GeneratedValue
   private Long id;
 
+  @NonNull
   private BigDecimal amount;
   private Boolean paid;
   private String externalId;

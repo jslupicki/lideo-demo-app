@@ -18,6 +18,5 @@ public class ReservationDTO {
   private Long flightId;
   @NonNull
   private Integer seats;
-  @NonNull
   private Boolean fasterCheckIn;
 }
