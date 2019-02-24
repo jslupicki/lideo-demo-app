@@ -8,6 +8,7 @@ import com.slupicki.lideo.exceptions.NotFoundException;
 import com.slupicki.lideo.exceptions.NotLoggedInException;
 import com.slupicki.lideo.exceptions.ToLateToCancelException;
 import com.slupicki.lideo.misc.PriceCalculator;
+import com.slupicki.lideo.misc.TimeProvider;
 import com.slupicki.lideo.model.Client;
 import com.slupicki.lideo.model.Flight;
 import com.slupicki.lideo.model.Payment;
@@ -35,6 +36,7 @@ public class ReservationController {
   private final FlightRepository flightRepository;
   private final ClientRepository clientRepository;
   private final PriceCalculator priceCalculator;
+  private final TimeProvider timeProvider;
   private final int howManyDaysBeforeFlightReservationCanBeCanceled;
 
   public ReservationController(
@@ -42,6 +44,7 @@ public class ReservationController {
       FlightRepository flightRepository,
       ClientRepository clientRepository,
       PriceCalculator priceCalculator,
+      TimeProvider timeProvider,
       @Value("${reservation.how.many.days.before.can.be.cancelled}")
           int howManyDaysBeforeFlightReservationCanBeCanceled
 
@@ -50,6 +53,7 @@ public class ReservationController {
     this.flightRepository = flightRepository;
     this.clientRepository = clientRepository;
     this.priceCalculator = priceCalculator;
+    this.timeProvider = timeProvider;
     this.howManyDaysBeforeFlightReservationCanBeCanceled = howManyDaysBeforeFlightReservationCanBeCanceled;
   }
 
@@ -92,7 +96,7 @@ public class ReservationController {
     if (clientId == null) {
       throw new NotLoggedInException("You have to log in to cancel reservation");
     }
-    reservationRepository.cancel(id, clientId, howManyDaysBeforeFlightReservationCanBeCanceled);
+    reservationRepository.cancel(id, clientId, howManyDaysBeforeFlightReservationCanBeCanceled, timeProvider.getTime());
   }
 
   @GetMapping("/template")

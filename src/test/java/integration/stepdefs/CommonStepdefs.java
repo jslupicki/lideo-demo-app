@@ -51,15 +51,18 @@ public class CommonStepdefs extends SpringIntegrationTest implements En {
       clientRepository.deleteAll();
     });
 
-    Given("clear state", () -> {
-      state.clear();
-    });
+    Given("clear state", () -> state.clear());
 
     Then("status is {word}", (String status) -> {
       assertThat(state.getHttpStatus()).isEqualTo(HttpStatus.valueOf(status));
     });
 
+    Then("response body contains {string}", (String contains) -> {
+      assertThat(state.getResponseBody()).containsIgnoringCase(contains);
+    });
+
     Then("sleep for {int}s", (Integer seconds) -> {
+      log.info("Sleep for {}s", seconds);
       Thread.sleep(seconds * 1000L);
     });
 
@@ -95,7 +98,7 @@ public class CommonStepdefs extends SpringIntegrationTest implements En {
       reservations.forEach(reservation -> log.info("Load reservation: {}", reservation));
     });
 
-    Given("set time to {word}", (String newTimeStr) -> {
+    Given("set time to {string}", (String newTimeStr) -> {
       ZonedDateTime newTime = TimeParser.parseZonedDateTime(newTimeStr);
       configurableTimeProvider.setTime(newTime);
       log.info("Set current time to {}", newTime);

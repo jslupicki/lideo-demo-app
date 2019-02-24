@@ -196,7 +196,7 @@ public class DaoTests {
     client.setReservations(ImmutableList.of(reservation));
     clientRepository.save(client);
 
-    reservationRepository.cancel(reservation.getId(), client.getId(), 0);
+    reservationRepository.cancel(reservation.getId(), client.getId(), 0, ZonedDateTime.now());
     flight = flightRepository.findById(flight.getId()).get();
     assertThat(flight.getFreeSeats()).isEqualTo(12);
   }

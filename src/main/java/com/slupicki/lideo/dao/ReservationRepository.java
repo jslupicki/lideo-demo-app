@@ -34,13 +34,20 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
   @Modifying
   @Transactional
   default void cancel(Long id, Long clientId, int howManyDaysBeforeFlightReservationCanBeCanceled) throws NotFoundException, ToLateToCancelException {
+    cancel(id, clientId, howManyDaysBeforeFlightReservationCanBeCanceled, ZonedDateTime.now());
+  }
+
+  @Modifying
+  @Transactional
+  default void cancel(Long id, Long clientId, int howManyDaysBeforeFlightReservationCanBeCanceled, ZonedDateTime now)
+      throws NotFoundException, ToLateToCancelException {
     Optional<Reservation> reservationOpt = findByIdEqualsAndClient_IdEquals(id, clientId);
     if (!reservationOpt.isPresent()) {
       throw new NotFoundException(MessageFormat.format("Can''t find reservation with id = {0} for client with id = {1}", id, clientId));
     }
     Reservation reservation = reservationOpt.get();
     Flight flight = reservation.getFlight();
-    if (ZonedDateTime.now().plusDays(howManyDaysBeforeFlightReservationCanBeCanceled).isAfter(flight.getDepartureTime())) {
+    if (now.plusDays(howManyDaysBeforeFlightReservationCanBeCanceled).isAfter(flight.getDepartureTime())) {
       throw new ToLateToCancelException("It is too late to cancel this reservation");
     }
     flight.setFreeSeats(flight.getFreeSeats() + reservation.getSeats());

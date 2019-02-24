@@ -6,6 +6,7 @@ Feature: Client can reserve flight
 
   Background:
     Given empty DB
+    And set time to "2019-02-20"
     And load flights to DB:
       | id | departure | arrival | free_seats | price_per_seat | departure_time   |
       | 1  | Wroclaw   | Warsaw  | 10         | 115            | 2019-02-23 12:30 |
@@ -46,13 +47,42 @@ Feature: Client can reserve flight
 
   Scenario: Client cancel successfully the reservation 5 days before departure
     Given client log in by login "log1" and password "pass1"
-    When client create reservation:
-      | client_id | flight_id | seats | faster_check_in |
-      | 1         | 1         | 2     | true            |
+# flight 1 departure 2019-02-23 12:30 - 5 days earlier is 2019-02-18
+    And set time to "2019-02-18"
     When client cancel reservation 1
+    Then reservation 1 is canceled
 
   Scenario: Client can't cancel the reservation in less than 5 days before departure
+    Given client log in by login "log1" and password "pass1"
+# flight 1 departure 2019-02-23 12:30 - 5 days earlier is 2019-02-18
+    And set time to "2019-02-20"
+    When client cancel reservation 1
+    Then status is CONFLICT
+    And response body contains "It is too late to cancel this reservation"
 
   Scenario: Client pay before 2 days everything go normal
+    Given client log in by login "log1" and password "pass1"
+# payment for reservation 1 was created at 2019-02-21 so client have time to 2019-02-23 before automatic cancelation
+    And set time to "2019-02-21"
+    When sleep for 2s
+# check if scheduler cancel reservation
+    Then reservation 1 is NOT canceled
+    When client pay payment 1
+    And status is OK
+# 2019-02-23 01:00 scheduler should cancel reservation if it isn't payed
+    And set time to "2019-02-23 01:00"
+    And sleep for 2s
+    Then reservation 1 is NOT canceled
 
   Scenario: Client not pay before 2 days and reservation is canceled
+    Given client log in by login "log1" and password "pass1"
+# payment for reservation 1 was created at 2019-02-21 so client have time to 2019-02-23 before automatic cancelation
+    And set time to "2019-02-21"
+    When sleep for 2s
+# check if scheduler cancel reservation
+    Then reservation 1 is NOT canceled
+# now client NOT pay payment
+# 2019-02-23 01:00 scheduler should cancel reservation if it isn't payed
+    And set time to "2019-02-23 01:00"
+    And sleep for 2s
+    Then reservation 1 is canceled
