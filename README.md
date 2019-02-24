@@ -32,11 +32,13 @@ I choose REST interface to expose functions of application. For programming stac
     
 ## Cucumber tests
 
+All tests use common step definitions from [CommonStepdefs](src/test/java/integration/stepdefs/CommonStepdefs.java)
+and additional step definitions specific for area of the feature.
+
 ### Registration of the clients
 
 Test scenarios of registration clients are in [registration.feature](src/test/resources/registration.feature).
-Step definitions are in [CommonStepdefs](src/test/java/integration/stepdefs/CommonStepdefs.java) and
-[ReservationStepdefs](src/test/java/integration/stepdefs/reservation/ReservationStepdefs.java).
+Step definitions are in [ReservationStepdefs](src/test/java/integration/stepdefs/reservation/ReservationStepdefs.java).
 They are run by [RegistrationIntegrationTests](src/test/java/integration/RegistrationIntegrationTests.java).
 
 Scenarios:
@@ -45,5 +47,38 @@ Scenarios:
   Scenario: Client can't register twice
   Scenario: Client can check if login is already used
   Scenario: Client can log in
+```
+
+### Searching flights
+
+Test scenarios for searching flight are in [flights.feature](src/test/resources/flights.feature).
+Step definitions are in [FlightStepdefs](src/test/java/integration/stepdefs/flight/FlightStepdefs.java).
+They are run by [FlightIntegratioTests](src/test/java/integration/FlightIntegrationTests.java).
+
+Scenarios:
+```gherkin
+  Scenario: Search by departure
+  Scenario: Search by partial name of departure
+  Scenario: Search by arrival
+  Scenario: Search by range date
+  Scenario: Search by number of available seats
+  Scenario: Search by combinations of filters
+```
+
+### Reservations 
+
+Test scenarios for searching flight are in [reservations.feature](src/test/resources/reservations.feature).
+Step definitions are in [ReservationStepdefs](src/test/java/integration/stepdefs/reservation/ReservationStepdefs.java).
+They are run by [ReservationIntegratioTests](src/test/java/integration/ReservationIntegrationTests.java).
+
+Scenarios:
+```gherkin
+  Scenario: Non registered client reserve flight and don't have discount
+  Scenario: Registered client reserve flight and have discount
+  Scenario: Client purchase faster check-in and have to pay 50zł more
+  Scenario: Client cancel successfully the reservation 5 days before departure
+  Scenario: Client can't cancel the reservation in less than 5 days before departure
+  Scenario: Client pay before 2 days everything go normal
+  Scenario: Client not pay before 2 days and reservation is canceled
 ```
 

@@ -48,7 +48,7 @@ Feature: Searching available flights
 # Only flight 3 and 4 have > 25 free seats
     Then found flights 3,4
 
-  Scenario: Search by combinations
+  Scenario: Search by combinations of filters
     When search by:
       | departure | arrival |
       | wro       | war     |
