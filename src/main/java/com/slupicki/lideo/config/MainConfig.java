@@ -1,5 +1,10 @@
 package com.slupicki.lideo.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.slupicki.lideo.dao.ClientRepository;
 import com.slupicki.lideo.dao.FlightRepository;
 import com.slupicki.lideo.misc.TimeProvider;
@@ -30,6 +35,16 @@ public class MainConfig {
   @ConditionalOnMissingBean(TimeProvider.class)
   public TimeProvider timeProvider() {
     return new TimeProviderImpl();
+  }
+
+  @Bean
+  public ObjectMapper objectMapper() {
+    ObjectMapper mapper = new ObjectMapper()
+        .registerModule(new Jdk8Module())
+        .registerModule(new JavaTimeModule());
+    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    mapper.setDateFormat(new StdDateFormat());
+    return mapper;
   }
 
   @Bean

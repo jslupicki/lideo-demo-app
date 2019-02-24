@@ -19,15 +19,46 @@ Feature: Searching available flights
     When search by:
       | departure |
       | wroclaw   |
+# Demonstrate ignoring case
+    Then found flights 1,2
+
+  Scenario: Search by partial name of departure
+    When search by:
+      | departure |
+      | wroc      |
     Then found flights 1,2
 
   Scenario: Search by arrival
-
-  Scenario: Search by date
+    When search by:
+      | arrival |
+      | warsaw  |
+    Then found flights 1,3
 
   Scenario: Search by range date
+    When search by:
+      | from_date  | to_date    |
+      | 2019-02-23 | 2019-02-26 |
+# Number 4 is missing because 2019-02-26 == 2019-02-26 00:00:00
+    Then found flights 1,2,3
 
-  Scenario: Search by number of people
+  Scenario: Search by number of available seats
+    When search by:
+      | seats |
+      | 25    |
+# Only flight 3 and 4 have > 25 free seats
+    Then found flights 3,4
 
   Scenario: Search by combinations
+    When search by:
+      | departure | arrival |
+      | wro       | war     |
+    Then found flights 1
+    When search by:
+      | departure | seats |
+      | wro       | 15    |
+    Then found flights 2
+    When search by:
+      | departure | arrival | seats | to_date    |
+      | wro       | war     | 5     | 2019-02-24 |
+    Then found flights 1
 

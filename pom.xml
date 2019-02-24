@@ -25,6 +25,7 @@
         <commons-collections4.version>4.1</commons-collections4.version>
         <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
         <awaitility.version>3.1.6</awaitility.version>
+        <jackson-datatype-jsr310.version>2.9.8</jackson-datatype-jsr310.version>
     </properties>
 
     <dependencies>
@@ -50,6 +51,13 @@
             <groupId>org.springframework.session</groupId>
             <artifactId>spring-session-jdbc</artifactId>
         </dependency>
+        <!--
+                <dependency>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jsr310</artifactId>
+                    <version>${jackson-datatype-jsr310.version}</version>
+                </dependency>
+        -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>

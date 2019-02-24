@@ -34,6 +34,7 @@ public class RestTool {
   public static final String CHECK_LOGIN = "{protocol}://{host}:{port}/client/login/{login}";
   public static final String LOGIN = "{protocol}://{host}:{port}/client/login";
   public static final String CURRENT_CLIENT = "{protocol}://{host}:{port}/client/logged";
+  public static final String FLIGHT_SEARCH = "{protocol}://{host}:{port}/flight/search";
 
   private final RestTemplate restTemplate;
   private final String serverPort;

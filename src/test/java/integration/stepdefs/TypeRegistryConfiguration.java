@@ -13,7 +13,9 @@ import cucumber.api.TypeRegistryConfigurer;
 import io.cucumber.cucumberexpressions.ParameterType;
 import io.cucumber.datatable.DataTableType;
 import io.cucumber.datatable.TableEntryTransformer;
+import io.vavr.control.Try;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -165,18 +167,20 @@ public class TypeRegistryConfiguration implements TypeRegistryConfigurer {
     );
   }
 
-  private ZonedDateTime parseZonedDateTime(String departureTime) {
-    if (Strings.isNullOrEmpty(departureTime)) {
+  public static ZonedDateTime parseZonedDateTime(String time) {
+    if (Strings.isNullOrEmpty(time)) {
       return null;
     }
     for (DateTimeFormatter dateTimeFormatter : KNOWN_DATE_TIME_FORMATS) {
       try {
-        return ZonedDateTime.parse(departureTime, dateTimeFormatter);
-      } catch (Exception e) {
+        return Try.of(() -> ZonedDateTime.parse(time, dateTimeFormatter))
+            .recover(e -> LocalDate.parse(time, dateTimeFormatter).atStartOfDay(ZoneId.systemDefault()))
+            .getOrElseThrow(t -> t);
+      } catch (Throwable e) {
         // ignore - wrong format
       }
     }
-    throw new RuntimeException("Can't parse date of '" + departureTime + "' - unknown format");
+    throw new RuntimeException("Can't parse date of '" + time + "' - unknown format");
   }
 
   private <T> T sanitize(String parameter, Function<String, T> converter) {
