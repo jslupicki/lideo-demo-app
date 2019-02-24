@@ -1,10 +1,10 @@
 package integration.stepdefs.client;
 
-import static com.slupicki.lideo.testTools.RestTool.BASE_TEMPLATE;
 import static com.slupicki.lideo.testTools.RestTool.CHECK_LOGIN;
 import static com.slupicki.lideo.testTools.RestTool.CURRENT_CLIENT;
 import static com.slupicki.lideo.testTools.RestTool.EMPTY_PARAMS;
 import static com.slupicki.lideo.testTools.RestTool.LOGIN;
+import static com.slupicki.lideo.testTools.RestTool.REGISTER_CLIENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.google.common.collect.ImmutableMap;
@@ -48,9 +48,9 @@ public class ClientStepdefs implements En {
       log.info("Client created: {}", state.getClient());
     });
 
-    When("send client by POST on {word}", (String path) -> {
+    When("register new client", () -> {
       state.setClientId(
-          restTool.post(BASE_TEMPLATE, Long.class, state.getClient(), EMPTY_PARAMS, ImmutableMap.of("path", path)).orElse(null)
+          restTool.post(REGISTER_CLIENT, Long.class, state.getClient(), EMPTY_PARAMS, EMPTY_PARAMS).orElse(null)
       );
       if (HttpStatus.OK.equals(state.getHttpStatus())) {
         assertThat(state.getClientId()).isNotNull();

@@ -24,12 +24,12 @@ public class PaymentController {
     this.paymentRepository = paymentRepository;
   }
 
-  @GetMapping("/")
+  @GetMapping("")
   public List<Payment> getAllPayments() {
     return paymentRepository.findAll();
   }
 
-  @PutMapping("/")
+  @PutMapping("")
   @Transactional
   public void paid(@RequestBody PaymentDTO paymentDTO) throws NotFoundException, AlreadyExistException {
     Assert.notNull(paymentDTO.getPaymentId(), "Payment ID have to be set");

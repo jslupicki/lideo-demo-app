@@ -34,7 +34,7 @@ public class ClientController {
     this.clientRepository = clientRepository;
   }
 
-  @GetMapping("/")
+  @GetMapping("")
   public List<Client> getAllClients() {
     return clientRepository.findAll().stream()
         .map(client -> client.toBuilder().password("(filtered out)").build())
@@ -46,7 +46,7 @@ public class ClientController {
     return clientRepository.findById(id).orElseThrow(NotFoundException::new);
   }
 
-  @PostMapping("/")
+  @PostMapping("")
   public Long registerNewClient(@RequestBody Client client) throws AlreadyExistException {
     checkIfClientAlreadyExist(client);
     clientRepository.save(client);
@@ -79,7 +79,7 @@ public class ClientController {
     return clientRepository.findById(clientId).orElseThrow(NotFoundException::new);
   }
 
-  @PutMapping("/")
+  @PutMapping("")
   public Long updateClient(@RequestBody Client client) throws AlreadyExistException {
     checkIfClientAlreadyExist(client);
     clientRepository.save(client);

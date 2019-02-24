@@ -53,7 +53,7 @@ public class ReservationController {
     this.howManyDaysBeforeFlightReservationCanBeCanceled = howManyDaysBeforeFlightReservationCanBeCanceled;
   }
 
-  @PostMapping("/")
+  @PostMapping("")
   @Transactional
   public Reservation addReservation(@RequestBody ReservationDTO reservationDTO) throws NotFoundException, NotEnoughtSeatsInFlightException {
     Assert.notNull(reservationDTO.getClientId(), "Client ID have to be set");

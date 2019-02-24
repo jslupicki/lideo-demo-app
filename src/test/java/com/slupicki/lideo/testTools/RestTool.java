@@ -30,6 +30,7 @@ public class RestTool {
 
   public static final Map<String, String> EMPTY_PARAMS = Maps.newHashMap();
   public static final String BASE_TEMPLATE = "{protocol}://{host}:{port}{path}";
+  public static final String REGISTER_CLIENT = "{protocol}://{host}:{port}/client";
   public static final String CHECK_LOGIN = "{protocol}://{host}:{port}/client/login/{login}";
   public static final String LOGIN = "{protocol}://{host}:{port}/client/login";
   public static final String CURRENT_CLIENT = "{protocol}://{host}:{port}/client/logged";
