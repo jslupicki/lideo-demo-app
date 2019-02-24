@@ -1,6 +1,7 @@
 package integration.stepdefs;
 
-import com.google.common.collect.ImmutableList;
+import static com.slupicki.lideo.testTools.TimeParser.parseZonedDateTime;
+
 import com.slupicki.lideo.model.Client;
 import com.slupicki.lideo.model.Flight;
 import com.slupicki.lideo.model.FlightDTO;
@@ -11,34 +12,17 @@ import com.slupicki.lideo.model.ReservationDTO;
 import cucumber.api.TypeRegistry;
 import cucumber.api.TypeRegistryConfigurer;
 import io.cucumber.cucumberexpressions.ParameterType;
+import io.cucumber.cucumberexpressions.Transformer;
 import io.cucumber.datatable.DataTableType;
 import io.cucumber.datatable.TableEntryTransformer;
-import io.vavr.control.Try;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import org.assertj.core.util.Strings;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TypeRegistryConfiguration implements TypeRegistryConfigurer {
-
-  private static final List<DateTimeFormatter> KNOWN_DATE_TIME_FORMATS = ImmutableList.of(
-      "yyyy-MM-dd",
-      "yyyy-MM-dd HH:mm:ss",
-      "yyyy-MM-dd HH:mm",
-      "dd-MM-yyyy",
-      "dd-MM-yyyy HH:mm:ss",
-      "dd-MM-yyyy HH:mm"
-  ).stream()
-      .map(s -> DateTimeFormatter.ofPattern(s).withZone(ZoneId.systemDefault()))
-      .collect(Collectors.toList());
 
   @Override
   public Locale locale() {
@@ -52,6 +36,13 @@ public class TypeRegistryConfiguration implements TypeRegistryConfigurer {
         "true|false|TRUE|FALSE",
         Boolean.class,
         Boolean::parseBoolean)
+    );
+
+    typeRegistry.defineParameterType(new ParameterType<>(
+        "big_decimal",
+        "[-+]?[0-9]*\\.?[0-9]",
+        BigDecimal.class,
+        (Transformer<BigDecimal>) BigDecimal::new)
     );
 
     // Fields in table (all optional):
@@ -143,7 +134,7 @@ public class TypeRegistryConfiguration implements TypeRegistryConfigurer {
                     .id(sanitize(map.get("id"), Long::parseUnsignedLong))
                     .client(sanitize(map.get("client_id"), s -> Client.builder().id(Long.parseUnsignedLong(s)).build()))
                     .flight(sanitize(map.get("flight_id"), s -> Flight.builder().id(Long.parseUnsignedLong(s)).build()))
-                    .payment(sanitize(map.get("payment_id"), s -> Payment.builder().id(Long.parseUnsignedLong(s)).build()))
+                    .payment(sanitize(map.get("payment_id"), s -> Payment.builder().id(Long.parseUnsignedLong(s)).amount(BigDecimal.ZERO).build()))
                     .seats(sanitize(map.get("seats"), Integer::parseUnsignedInt))
                     .price(sanitize(map.get("price"), BigDecimal::new))
                     .cancellation(sanitize(map.get("cancellation"), Boolean::parseBoolean))
@@ -165,22 +156,6 @@ public class TypeRegistryConfiguration implements TypeRegistryConfigurer {
                     .build()
         )
     );
-  }
-
-  public static ZonedDateTime parseZonedDateTime(String time) {
-    if (Strings.isNullOrEmpty(time)) {
-      return null;
-    }
-    for (DateTimeFormatter dateTimeFormatter : KNOWN_DATE_TIME_FORMATS) {
-      try {
-        return Try.of(() -> ZonedDateTime.parse(time, dateTimeFormatter))
-            .recover(e -> LocalDate.parse(time, dateTimeFormatter).atStartOfDay(ZoneId.systemDefault()))
-            .getOrElseThrow(t -> t);
-      } catch (Throwable e) {
-        // ignore - wrong format
-      }
-    }
-    throw new RuntimeException("Can't parse date of '" + time + "' - unknown format");
   }
 
   private <T> T sanitize(String parameter, Function<String, T> converter) {

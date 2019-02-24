@@ -1,5 +1,6 @@
 package com.slupicki.lideo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -29,6 +30,7 @@ public class Client {
   private String address;
   private String login;
   private String password;
+  @JsonIgnore
   @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
   private List<Reservation> reservations;
 

@@ -16,19 +16,22 @@ public class Scheduler {
 
   private final Period howLongBeforeCancelUnpaidReservation;
   private final ReservationRepository reservationRepository;
+  private final TimeProvider timeProvider;
 
   public Scheduler(
       @Value("${scheduler.cancelling_unpaid_reservations.period}")
           Period howLongBeforeCancelUnpaidReservation,
-      ReservationRepository reservationRepository
+      ReservationRepository reservationRepository,
+      TimeProvider timeProvider
   ) {
     this.howLongBeforeCancelUnpaidReservation = howLongBeforeCancelUnpaidReservation;
     this.reservationRepository = reservationRepository;
+    this.timeProvider = timeProvider;
   }
 
   @Scheduled(cron = "${scheduler.cancelling_unpaid_reservations}")
   public void cancellingUnpaidReservations() {
-    ZonedDateTime cancelBefore = ZonedDateTime.now().minus(howLongBeforeCancelUnpaidReservation);
+    ZonedDateTime cancelBefore = timeProvider.getTime().minus(howLongBeforeCancelUnpaidReservation);
     log.info("Start cancelling unpaid reservations (all unpaid before {})", cancelBefore);
     int howManyCanceled = reservationRepository.cancelOverdueReservations(cancelBefore);
     log.info("Canceled {} reservations", howManyCanceled);

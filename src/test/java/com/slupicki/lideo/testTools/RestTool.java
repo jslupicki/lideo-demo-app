@@ -35,6 +35,8 @@ public class RestTool {
   public static final String LOGIN = "{protocol}://{host}:{port}/client/login";
   public static final String CURRENT_CLIENT = "{protocol}://{host}:{port}/client/logged";
   public static final String FLIGHT_SEARCH = "{protocol}://{host}:{port}/flight/search";
+  public static final String ADD_RESERVATION = "{protocol}://{host}:{port}/reservation";
+  public static final String CANCEL_RESERVATION = "{protocol}://{host}:{port}/reservation/{id}";
 
   private final RestTemplate restTemplate;
   private final String serverPort;

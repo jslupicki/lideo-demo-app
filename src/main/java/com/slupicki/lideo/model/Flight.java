@@ -1,5 +1,6 @@
 package com.slupicki.lideo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -31,6 +32,7 @@ public class Flight {
   private ZonedDateTime departureTime;
   private Integer freeSeats;
   private BigDecimal pricePerSeat;
+  @JsonIgnore
   @OneToMany(mappedBy = "flight", fetch = FetchType.EAGER)
   private List<Reservation> reservations;
 
