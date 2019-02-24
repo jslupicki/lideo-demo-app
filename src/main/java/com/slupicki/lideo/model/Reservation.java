@@ -15,6 +15,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Builder(toBuilder = true)
@@ -24,7 +25,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Reservation {
 
   @Id
-  @GeneratedValue
+  @GenericGenerator(name = "UseIdOrGenerate", strategy = "com.slupicki.lideo.misc.UseIdOrGenerate")
+  @GeneratedValue(generator = "UseIdOrGenerate")
   private Long id;
 
   @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")

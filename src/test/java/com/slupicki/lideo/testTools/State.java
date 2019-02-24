@@ -2,8 +2,11 @@ package com.slupicki.lideo.testTools;
 
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_SINGLETON;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.slupicki.lideo.model.Client;
+import com.slupicki.lideo.model.Flight;
+import java.util.List;
 import java.util.Map;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
@@ -13,12 +16,14 @@ import org.springframework.stereotype.Component;
 @Scope(SCOPE_SINGLETON)
 public class State {
 
+
   private enum Key {
     HTTP_STATUS,
     RESPONSE_BODY,
     CLIENT,
     CLIENT_ID,
-    TEST_RESULT
+    TEST_RESULT,
+    FOUND_FLIGHTS
   }
 
   private static final Map<Key, Object> stateMap = Maps.newHashMap();
@@ -65,5 +70,13 @@ public class State {
 
   public Boolean getTestResult() {
     return (Boolean) stateMap.get(Key.TEST_RESULT);
+  }
+
+  public void setFoundFlights(Iterable<Flight> flights) {
+    stateMap.put(Key.FOUND_FLIGHTS, Lists.newArrayList(flights));
+  }
+
+  public List<Flight> getFoundFlights() {
+    return (List<Flight>) stateMap.get(Key.FOUND_FLIGHTS);
   }
 }

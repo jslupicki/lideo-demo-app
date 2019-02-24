@@ -16,7 +16,10 @@ Feature: Searching available flights
 
 
   Scenario: Search by departure
-    Given test
+    When search by:
+      | departure |
+      | wroclaw   |
+    Then found flights 1,2
 
   Scenario: Search by arrival
 

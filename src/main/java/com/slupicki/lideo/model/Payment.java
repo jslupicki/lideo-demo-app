@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Builder(toBuilder = true)
@@ -20,7 +21,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 public class Payment {
 
   @Id
-  @GeneratedValue
+  @GenericGenerator(name = "UseIdOrGenerate", strategy = "com.slupicki.lideo.misc.UseIdOrGenerate")
+  @GeneratedValue(generator = "UseIdOrGenerate")
   private Long id;
 
   @NonNull

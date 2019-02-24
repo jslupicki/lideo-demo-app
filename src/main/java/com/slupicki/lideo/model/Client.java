@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Builder(toBuilder = true)
@@ -19,7 +20,8 @@ import lombok.NoArgsConstructor;
 public class Client {
 
   @Id
-  @GeneratedValue
+  @GenericGenerator(name = "UseIdOrGenerate", strategy = "com.slupicki.lideo.misc.UseIdOrGenerate")
+  @GeneratedValue(generator = "UseIdOrGenerate")
   private Long id;
 
   private String name;
