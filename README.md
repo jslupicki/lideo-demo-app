@@ -34,4 +34,16 @@ I choose REST interface to expose functions of application. For programming stac
 
 ### Registration of the clients
 
-Test scenarios of registration clients are in [registration.features](src/test/resources/registration.features)
+Test scenarios of registration clients are in [registration.feature](src/test/resources/registration.feature).
+Step definitions are in [CommonStepdefs](src/test/java/integration/stepdefs/CommonStepdefs.java) and
+[ReservationStepdefs](src/test/java/integration/stepdefs/reservation/ReservationStepdefs.java).
+They are run by [RegistrationIntegrationTests](src/test/java/integration/RegistrationIntegrationTests.java).
+
+Scenarios:
+```gherkin
+  Scenario: Register new client
+  Scenario: Client can't register twice
+  Scenario: Client can check if login is already used
+  Scenario: Client can log in
+```
+

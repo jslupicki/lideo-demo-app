@@ -33,7 +33,7 @@ public class Reservation {
   private Integer seats;
   private BigDecimal price;
   private Boolean cancellation;
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
   private Payment payment;
 
   public static Reservation of(Client client, Flight flight, Integer seats, BigDecimal price) {

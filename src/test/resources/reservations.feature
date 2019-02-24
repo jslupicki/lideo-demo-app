@@ -18,8 +18,8 @@ Feature: Client can reserve flight
       | 1  | Jan  | Kowalski      |         | log1  | pass1    |
       | 2  | Jan  | NotRegistered |         |       |          |
     And load payments to DB:
-      | id | amount | external_id | paid  | created_at       |
-      | 1  | 109.25 | someId      | false | 2019-02-23 12:30 |
+      | id | amount | external_id | paid  | created_at |
+      | 1  | 109.25 | someId      | false | 2019-02-21 |
     And load reservations to DB:
       | id | client_id | flight_id | payment_id | seats | price  | cancellation |
       | 1  | 1         | 1         | 1          | 1     | 109.25 | false        |

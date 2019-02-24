@@ -6,8 +6,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-    //  features = "classpath:reservations.feature"
-    features = "classpath:sandbox.feature"
+    features = "classpath:reservations.feature"
     , glue = {
     "classpath:integration/stepdefs"
     , "classpath:integration/stepdefs/reservation"

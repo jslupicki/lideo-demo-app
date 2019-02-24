@@ -55,6 +55,7 @@ public class Payment {
         .append("amount", amount)
         .append("paid", paid)
         .append("externalId", externalId)
+        .append("createdAt", createdAt)
         .toString();
   }
 }

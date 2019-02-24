@@ -45,6 +45,7 @@ public class CommonStepdefs extends SpringIntegrationTest implements En {
 
   public CommonStepdefs() {
     Given("empty DB", () -> {
+      log.info("Clean DB");
       reservationRepository.deleteAll();
       paymentRepository.deleteAll();
       flightRepository.deleteAll();

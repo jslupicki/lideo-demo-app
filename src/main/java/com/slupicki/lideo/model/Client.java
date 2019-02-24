@@ -31,7 +31,7 @@ public class Client {
   private String login;
   private String password;
   @JsonIgnore
-  @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Reservation> reservations;
 
 
